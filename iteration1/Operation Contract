@@ -16,3 +16,25 @@ Postcodition:
   - The ActivityEntry then gets associated with the Task (association formed)
   - The ActivityEntry's attributes such as timestamp and description are set (attribute modification)
 
+Contract C02: removeTask
+Operation:
+removeTask(int taskId)
+
+Preconditions:
+  - The system is running and online.
+  - The task that needs to be removed exists
+
+Posconditions:
+- The status of the task is changed to cancelled (attribute modification)
+- The task remains still in the system and does not get deleted
+- A new ActivityEntry pbject is created (object creation)
+- The ActivityEntry object is associated with the Task (association formed)
+- The ActivityEntry's attributes such as timestamp and description are set (attribute modification)
+
+Contract CO3: updateTask
+Operation:
+upDateTask(int taskId, ...)
+
+Preconditions:
+- The system is running and online.
+- The task that needs to be updated 
