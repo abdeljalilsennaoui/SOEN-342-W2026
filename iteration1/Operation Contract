@@ -36,8 +36,8 @@ Operation:
 updateTask(...)
 
 Preconditions:
-  - The system is running.
-  - The task exists.
+  - The system is running and online.
+  - The task that needs to be updated exists.
 
 Postcondition:
   - One or more Task attributes (title, description, priority, due date, or status) are updated (attribute modification).
@@ -51,9 +51,77 @@ Operation:
 createProject(String name, String description)
 
 Preconditions:
-  - The system is running.
+  - The system is running and online.
   - The project name is provided.
 
 Postcondition:
   - A new Project object is created (object creation).
   - Project attributes such as name and description are set (attribute modification).
+
+
+Contract CO5: createSubtask
+Operation:
+createSubtask(int parentTaskId, String title)
+
+Preconditions:
+  - The system is running and online.
+  - The parent task exists to create a subtask.
+  - The desired subtask title is provided.
+
+Postcondition:
+  - A new Subtask object is created 
+  - The Subtask's attributes such as title and completion status are set 
+  - The Subtask is associated with its appropriate parent Task 
+
+
+Contract CO6: addTags
+Operation:
+addTags(int taskId, String[] tags)
+
+Preconditions:
+  - The system is running and online.
+  - The task exists.
+  - The provided tags are valid.
+
+Postcondition:
+- The Task is associated with one or more Tag objects.
+- New Tag objects are created if they do not already exist
+
+
+Contract CO7: viewActivityHistory
+Operation:
+viewActivityHistory(int taskId)
+
+Preconditions:
+  - The system is running and online.
+  - The task you want to view history for exists.
+
+Postcondition:
+  - All Activity entries related to the Task in question are retrieved.
+  - The activity history of the task is displayed to the user.
+
+
+Contract CO8: viewTask
+Operation:
+viewTask(int taskId)
+
+Preconditions:
+  - The system is running and running.
+  - The task you want to view exists.
+
+Postcondition:
+  - All the task's information is retrieved.
+  - The task details are displayed to the user.
+
+
+Contract CO9: searchTask
+Operation:
+searchTask(String keyword)
+
+Preconditions:
+  - The system is running and online.
+  - A keyword to search the task is provided.
+
+Postcondition:
+- Any tasks matching the keyword in the title or description are retrieved.
+- Search results are displayed to the user.
