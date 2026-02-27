@@ -33,8 +33,27 @@ Posconditions:
 
 Contract CO3: updateTask
 Operation:
-upDateTask(int taskId, ...)
+updateTask(...)
 
 Preconditions:
-- The system is running and online.
-- The task that needs to be updated 
+  - The system is running.
+  - The task exists.
+
+Postcondition:
+  - One or more Task attributes (title, description, priority, due date, or status) are updated (attribute modification).
+  - A new ActivityEntry object is created (object creation).
+  - The ActivityEntry is associated with the Task (association formed).
+  - The ActivityEntry attributes such as timestamp and description are set (attribute modification).
+
+
+Contract CO4: createProject
+Operation:
+createProject(String name, String description)
+
+Preconditions:
+  - The system is running.
+  - The project name is provided.
+
+Postcondition:
+  - A new Project object is created (object creation).
+  - Project attributes such as name and description are set (attribute modification).
