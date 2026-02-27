@@ -16,6 +16,7 @@ Postcodition:
   - The ActivityEntry then gets associated with the Task 
   - The ActivityEntry's attributes such as timestamp and description are set
 
+
 Contract C02: removeTask
 Operation:
 removeTask(int taskId)
@@ -27,9 +28,6 @@ Preconditions:
 Posconditions:
 - The status of the task is changed to cancelled
 - The task remains still in the system and does not get deleted
-- A new ActivityEntry pbject is created 
-- The ActivityEntry object is associated with the Task 
-- The ActivityEntry's attributes such as timestamp and description are set 
 
 Contract CO3: updateTask
 Operation:
