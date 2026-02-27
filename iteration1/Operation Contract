@@ -1,0 +1,18 @@
+Contract CO1: createTask
+Operation:
+creatTask(String title, String description, Priority priority,
+Date completeBy)
+
+Preconditions:
+  - The system is running and online.
+  - The task title is provided and correct.
+  - The priority is chosen.
+
+Postcodition:
+  - A new Task object is created (object creation)
+  - Task attributes including title, description, priority, the completion date, the
+  date it was created, and status) are all set using the (attribute modification)
+  - A new ActivityEntry object is created (object creation)
+  - The ActivityEntry then gets associated with the Task (association formed)
+  - The ActivityEntry's attributes such as timestamp and description are set (attribute modification)
+
