@@ -25,8 +25,8 @@ Main Succes Scenario:
   5. The system scans through the provided informations to validate it.
   6. The system cretes a new task with the creation date set to the the current 
   time and status set to open.
-  8. The system records conducted activity with time stamp.
-  9. The system confirms the sucessful creation of the task and displays a message with
+  7. The system records conducted activity with time stamp.
+  8. The system confirms the sucessful creation of the task and displays a message with
   the task details.
 
 Alternative Failure Scenario:
