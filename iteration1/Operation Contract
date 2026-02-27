@@ -9,12 +9,12 @@ Preconditions:
   - The priority is chosen.
 
 Postcodition:
-  - A new Task object is created (object creation)
+  - A new Task object is created
   - Task attributes including title, description, priority, the completion date, the
   date it was created, and status) are all set using the (attribute modification)
-  - A new ActivityEntry object is created (object creation)
-  - The ActivityEntry then gets associated with the Task (association formed)
-  - The ActivityEntry's attributes such as timestamp and description are set (attribute modification)
+  - A new ActivityEntry object is created
+  - The ActivityEntry then gets associated with the Task 
+  - The ActivityEntry's attributes such as timestamp and description are set
 
 Contract C02: removeTask
 Operation:
@@ -25,11 +25,11 @@ Preconditions:
   - The task that needs to be removed exists
 
 Posconditions:
-- The status of the task is changed to cancelled (attribute modification)
+- The status of the task is changed to cancelled
 - The task remains still in the system and does not get deleted
-- A new ActivityEntry pbject is created (object creation)
-- The ActivityEntry object is associated with the Task (association formed)
-- The ActivityEntry's attributes such as timestamp and description are set (attribute modification)
+- A new ActivityEntry pbject is created 
+- The ActivityEntry object is associated with the Task 
+- The ActivityEntry's attributes such as timestamp and description are set 
 
 Contract CO3: updateTask
 Operation:
@@ -55,8 +55,8 @@ Preconditions:
   - The project name is provided.
 
 Postcondition:
-  - A new Project object is created (object creation).
-  - Project attributes such as name and description are set (attribute modification).
+  - A new Project object is created 
+  - Project attributes such as name and description are set
 
 
 Contract CO5: createSubtask
