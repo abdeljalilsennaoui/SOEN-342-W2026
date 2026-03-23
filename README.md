@@ -63,7 +63,7 @@ This compiles all source files and places the `.class` files in the `out/` direc
 java -cp out app.Main
 ```
 
-This runs the full demo script which exercises all 18 system operations in order:
+This runs the full demo script which exercises the 17 system operations across 16 steps:
 
 1. Create collaborators (Senior, Intermediate, Junior)
 2. Create projects
