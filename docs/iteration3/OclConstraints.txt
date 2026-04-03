@@ -1,0 +1,20 @@
+1. Maximum 20 subtasks
+context Task
+inv: self.subtasks 
+-> size() <= 20
+
+2. Maximum of 50 open tasks that do not have a due date 
+context Task
+inv: Task.allInstances()
+-> select(t | t.completionStatus = 'open' and t.dueDate = null)
+-> size() <= 50
+
+3. The limit of the Collaborator should be positive
+context Collaborator
+inv: self.taskLimit > 0
+
+4. There should be no collaborator overloaded
+context Collaborator
+inv: Task.allInstances()
+-> select(t | t.completionStatus = 'open' and t.collaborator = self)
+-> size() <= self.taskLimit
