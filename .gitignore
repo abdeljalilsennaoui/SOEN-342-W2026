@@ -21,3 +21,9 @@ Thumbs.db
 # Claude Code
 .claude/
 CLAUDE.md
+
+# Runtime generated files
+data/
+*.ics
+export_output.csv
+sample_import.csv

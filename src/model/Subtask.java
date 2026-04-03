@@ -23,6 +23,9 @@ public class Subtask {
     public String getTitle() { return title; }
     public CompletionStatus getCompletionStatus() { return completionStatus; }
 
+    public void setSubtaskId(String subtaskId) { this.subtaskId = subtaskId; }
+    public static void resetCounter(int n) { counter = n; }
+
     @Override
     public String toString() {
         return "Subtask{id='" + subtaskId + "', title='" + title

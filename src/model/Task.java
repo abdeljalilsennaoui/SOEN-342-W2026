@@ -74,6 +74,9 @@ public class Task {
     }
 
     public void addSubtask(Subtask subtask) {
+        if (this.subtasks.size() >= 20) {
+            throw new IllegalStateException("A task cannot have more than 20 subtasks.");
+        }
         this.subtasks.add(subtask);
     }
 
@@ -140,6 +143,11 @@ public class Task {
     public List<Subtask> getSubtasks() { return subtasks; }
     public RecurrencePattern getRecurrencePattern() { return recurrencePattern; }
     public List<TaskOccurrence> getOccurrences() { return occurrences; }
+
+    public void setTaskId(String taskId) { this.taskId = taskId; }
+    public void setCreationDate(LocalDate creationDate) { this.creationDate = creationDate; }
+    public void setCompletionStatus(CompletionStatus completionStatus) { this.completionStatus = completionStatus; }
+    public static void resetCounter(int n) { counter = n; }
 
     @Override
     public String toString() {

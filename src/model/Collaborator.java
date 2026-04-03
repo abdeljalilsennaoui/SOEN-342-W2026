@@ -25,7 +25,12 @@ public class Collaborator {
     public String getName() { return name; }
     public CollaboratorCategoryType getCategoryType() { return categoryType; }
     public int getTaskLimit() { return taskLimit; }
-    public void setTaskLimit(int taskLimit) { this.taskLimit = taskLimit; }
+    public void setTaskLimit(int taskLimit) {
+        if (taskLimit <= 0) throw new IllegalArgumentException("Task limit must be a positive integer.");
+        this.taskLimit = taskLimit;
+    }
+    public void setCollaboratorId(String collaboratorId) { this.collaboratorId = collaboratorId; }
+    public static void resetCounter(int n) { counter = n; }
 
     @Override
     public String toString() {

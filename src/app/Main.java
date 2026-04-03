@@ -1,11 +1,11 @@
 package app;
 
 import controller.PersonalTaskManager;
+import gateway.ICalGateway;
 import model.*;
 import repository.TaskRepository;
 import util.*;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,7 +14,11 @@ public class Main {
     public static void main(String[] args) {
         TaskRepository repository = new TaskRepository();
         ActivityLog activityLog = new ActivityLog();
-        PersonalTaskManager manager = new PersonalTaskManager(repository, activityLog);
+        ICalGateway icalGateway = new ICalGateway();
+        PersonalTaskManager manager = new PersonalTaskManager(repository, activityLog, icalGateway);
+
+        // Load persisted data if it exists
+        JsonPersistence.load(repository);
 
         System.out.println("==============================================");
         System.out.println("  Personal Task Manager - PoC Demo");
@@ -198,6 +202,41 @@ public class Main {
         for (ActivityEntry entry : activityLog.getEntries()) {
             System.out.println("  " + entry);
         }
+        System.out.println();
+
+        // ---- Step 17: Export to iCal ----
+        System.out.println("--- Step 17: Export to iCal ---");
+        // a) Single task
+        manager.exportTaskToIcal(task1.getTaskId(), "task_single.ics");
+        System.out.println("  Single task exported: task_single.ics");
+        // b) All tasks in a project
+        manager.exportProjectTasksToIcal(project1.getProjectId(), "project_website.ics");
+        System.out.println("  Project tasks exported: project_website.ics");
+        // c) Filtered list (open tasks only)
+        SearchCriteria icalCriteria = new SearchCriteria();
+        icalCriteria.setStatus(CompletionStatus.OPEN);
+        manager.exportFilteredTasksToIcal(icalCriteria, "filtered_open.ics");
+        System.out.println("  Filtered open tasks exported: filtered_open.ics");
+        System.out.println();
+
+        // ---- Step 18: List Overloaded Collaborators ----
+        System.out.println("--- Step 18: Overloaded Collaborators ---");
+        List<Collaborator> overloaded = manager.getOverloadedCollaborators();
+        if (overloaded.isEmpty()) {
+            System.out.println("  No collaborators are currently overloaded.");
+        } else {
+            for (Collaborator c : overloaded) {
+                int count = repository.countOpenTasksForCollaborator(c);
+                System.out.println("  OVERLOADED: " + c.getName()
+                        + " (" + c.getCategoryType() + ") — "
+                        + count + "/" + c.getTaskLimit() + " open tasks");
+            }
+        }
+        System.out.println();
+
+        // ---- Save state to JSON ----
+        JsonPersistence.save(repository);
+        System.out.println("  Data saved to data/ directory.");
 
         System.out.println("\n==============================================");
         System.out.println("  Demo Complete");
