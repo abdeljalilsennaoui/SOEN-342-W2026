@@ -17,6 +17,9 @@ public class Project {
     public String getName() { return name; }
     public String getDescription() { return description; }
 
+    public void setProjectId(String projectId) { this.projectId = projectId; }
+    public static void resetCounter(int n) { counter = n; }
+
     @Override
     public String toString() {
         return "Project{id='" + projectId + "', name='" + name + "'}";

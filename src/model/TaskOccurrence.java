@@ -24,6 +24,9 @@ public class TaskOccurrence {
     public LocalDate getDueDate() { return dueDate; }
     public CompletionStatus getCompletionStatus() { return completionStatus; }
 
+    public void setOccurrenceId(String occurrenceId) { this.occurrenceId = occurrenceId; }
+    public static void resetCounter(int n) { counter = n; }
+
     @Override
     public String toString() {
         return "Occurrence{id='" + occurrenceId + "', due=" + dueDate

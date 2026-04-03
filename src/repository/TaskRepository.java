@@ -37,6 +37,13 @@ public class TaskRepository {
         return new ArrayList<>(tasks);
     }
 
+    public List<Task> getTasksByProject(String projectId) {
+        return tasks.stream()
+                .filter(t -> t.getProject() != null
+                        && t.getProject().getProjectId().equals(projectId))
+                .collect(Collectors.toList());
+    }
+
     // Project operations
     public void saveProject(Project project) {
         projects.add(project);
@@ -56,6 +63,10 @@ public class TaskRepository {
         return null;
     }
 
+    public List<Project> getAllProjects() {
+        return new ArrayList<>(projects);
+    }
+
     // Collaborator operations
     public void saveCollaborator(Collaborator collaborator) {
         collaborators.add(collaborator);
@@ -73,6 +84,10 @@ public class TaskRepository {
             if (c.getName().equalsIgnoreCase(name)) return c;
         }
         return null;
+    }
+
+    public List<Collaborator> getAllCollaborators() {
+        return new ArrayList<>(collaborators);
     }
 
     // Tag operations

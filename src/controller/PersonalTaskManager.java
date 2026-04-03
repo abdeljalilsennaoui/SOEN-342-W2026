@@ -1,20 +1,25 @@
 package controller;
 
+import gateway.ICalGateway;
 import model.*;
 import repository.TaskRepository;
 import util.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PersonalTaskManager {
     private TaskRepository taskRepository;
     private ActivityLog activityLog;
+    private ICalGateway icalGateway;
 
-    public PersonalTaskManager(TaskRepository taskRepository, ActivityLog activityLog) {
+    public PersonalTaskManager(TaskRepository taskRepository, ActivityLog activityLog, ICalGateway icalGateway) {
         this.taskRepository = taskRepository;
         this.activityLog = activityLog;
+        this.icalGateway = icalGateway;
     }
 
     // ---- Interaction Diagram 1: Create Task ----
@@ -26,6 +31,17 @@ public class PersonalTaskManager {
 
         if (taskRepository.findTaskByTitleAndDueDate(title, dueDate) != null) {
             throw new IllegalArgumentException("A task with this title and due date already exists.");
+        }
+
+        // OCL Constraint 2: open tasks without a due date must not exceed 50
+        if (dueDate == null) {
+            long undatedOpen = taskRepository.getAllTasks().stream()
+                    .filter(t -> t.getCompletionStatus() == CompletionStatus.OPEN && t.getDueDate() == null)
+                    .count();
+            if (undatedOpen >= 50) {
+                throw new IllegalStateException(
+                        "Cannot create task: limit of 50 open tasks without a due date has been reached.");
+            }
         }
 
         Task task = new Task(title, description, priorityLevel, dueDate, recurrence);
@@ -304,6 +320,58 @@ public class PersonalTaskManager {
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot write CSV file: " + e.getMessage());
         }
+    }
+
+    // ---- Iteration 3: iCal Export ----
+
+    public void exportTaskToIcal(String taskId, String filePath) {
+        Task task = taskRepository.findTaskById(taskId);
+        if (task == null) throw new IllegalArgumentException("Task not found: " + taskId);
+        try {
+            icalGateway.exportTaskToIcal(task, filePath);
+            activityLog.addEntry("Task exported to iCal: " + task.getTitle());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("iCal export failed: " + e.getMessage());
+        }
+    }
+
+    public void exportProjectTasksToIcal(String projectId, String filePath) {
+        Project project = taskRepository.findProjectById(projectId);
+        if (project == null) throw new IllegalArgumentException("Project not found: " + projectId);
+        List<Task> tasks = taskRepository.getTasksByProject(projectId);
+        try {
+            icalGateway.exportProjectTasksToIcal(tasks, filePath);
+            activityLog.addEntry("Project tasks exported to iCal: " + project.getName());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("iCal export failed: " + e.getMessage());
+        }
+    }
+
+    public void exportFilteredTasksToIcal(SearchCriteria criteria, String filePath) {
+        List<Task> tasks = taskRepository.search(criteria);
+        // Filter in controller: only tasks with a due date are eligible
+        List<Task> eligible = tasks.stream()
+                .filter(t -> t.getDueDate() != null)
+                .collect(Collectors.toList());
+        try {
+            icalGateway.exportFilteredTasksToIcal(eligible, filePath);
+            activityLog.addEntry("Filtered tasks exported to iCal: " + filePath);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("iCal export failed: " + e.getMessage());
+        }
+    }
+
+    // ---- Iteration 3: Overloaded Collaborators ----
+
+    public List<Collaborator> getOverloadedCollaborators() {
+        List<Collaborator> overloaded = new ArrayList<>();
+        for (Collaborator c : taskRepository.getAllCollaborators()) {
+            int openCount = taskRepository.countOpenTasksForCollaborator(c);
+            if (openCount > c.getTaskLimit()) {
+                overloaded.add(c);
+            }
+        }
+        return overloaded;
     }
 
     public ActivityLog getActivityLog() {
