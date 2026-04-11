@@ -43,21 +43,32 @@ public class Task {
     }
 
     public void complete() {
+        if (this.completionStatus != CompletionStatus.OPEN) {
+            throw new IllegalStateException("Cannot complete task: status is " + this.completionStatus);
+        }
         this.completionStatus = CompletionStatus.COMPLETED;
     }
 
     public void cancel() {
+        if (this.completionStatus != CompletionStatus.OPEN) {
+            throw new IllegalStateException("Cannot cancel task: status is " + this.completionStatus);
+        }
         this.completionStatus = CompletionStatus.CANCELLED;
     }
 
+    public void reopen() {
+        if (this.completionStatus == CompletionStatus.OPEN) {
+            throw new IllegalStateException("Task is already open.");
+        }
+        this.completionStatus = CompletionStatus.OPEN;
+    }
+
     public void updateDetails(String title, String description, PriorityLevel priorityLevel,
-                              LocalDate dueDate, CompletionStatus completionStatus,
-                              RecurrencePattern recurrence) {
+                              LocalDate dueDate, RecurrencePattern recurrence) {
         if (title != null) this.title = title;
         if (description != null) this.description = description;
         if (priorityLevel != null) this.priorityLevel = priorityLevel;
         if (dueDate != null) this.dueDate = dueDate;
-        if (completionStatus != null) this.completionStatus = completionStatus;
         if (recurrence != null) {
             this.recurrencePattern = recurrence;
             this.occurrences.clear();
