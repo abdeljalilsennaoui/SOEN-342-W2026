@@ -9,6 +9,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class JsonPersistence {
@@ -17,6 +18,7 @@ public class JsonPersistence {
     private static final String PROJECTS_FILE   = "data/projects.json";
     private static final String COLLABS_FILE    = "data/collaborators.json";
     private static final String TASKS_FILE      = "data/tasks.json";
+    private static final String ACTIVITY_FILE   = "data/activitylog.json";
 
     private static Gson createGson() {
         return new GsonBuilder()
@@ -29,6 +31,10 @@ public class JsonPersistence {
     }
 
     public static void save(TaskRepository repo) {
+        save(repo, null);
+    }
+
+    public static void save(TaskRepository repo, ActivityLog activityLog) {
         try {
             Files.createDirectories(Paths.get(DATA_DIR));
         } catch (IOException e) {
@@ -48,9 +54,19 @@ public class JsonPersistence {
         List<TaskDto> taskDtos = new ArrayList<>();
         for (Task t : repo.getAllTasks()) taskDtos.add(new TaskDto(t));
         writeJson(gson, TASKS_FILE, taskDtos);
+
+        if (activityLog != null) {
+            List<ActivityEntryDto> entryDtos = new ArrayList<>();
+            for (ActivityEntry e : activityLog.getEntries()) entryDtos.add(new ActivityEntryDto(e));
+            writeJson(gson, ACTIVITY_FILE, entryDtos);
+        }
     }
 
     public static void load(TaskRepository repo) {
+        load(repo, null);
+    }
+
+    public static void load(TaskRepository repo, ActivityLog activityLog) {
         if (!Files.exists(Paths.get(TASKS_FILE))) return;
         Gson gson = createGson();
 
@@ -107,6 +123,19 @@ public class JsonPersistence {
             Task.resetCounter(maxTask + 1);
             Subtask.resetCounter(maxSub + 1);
             TaskOccurrence.resetCounter(maxOcc + 1);
+        }
+
+        // Load activity log
+        if (activityLog != null && Files.exists(Paths.get(ACTIVITY_FILE))) {
+            List<ActivityEntryDto> entryDtos = readJson(gson, ACTIVITY_FILE,
+                    new TypeToken<List<ActivityEntryDto>>(){}.getType());
+            if (entryDtos != null) {
+                for (ActivityEntryDto dto : entryDtos) {
+                    activityLog.addRestoredEntry(dto.timestamp != null
+                            ? LocalDateTime.parse(dto.timestamp) : LocalDateTime.now(),
+                            dto.actionDescription);
+                }
+            }
         }
     }
 
@@ -235,6 +264,14 @@ public class JsonPersistence {
             for (String kw : tags) t.addTag(new Tag(kw));
             for (TaskOccurrenceDto od : occurrences) t.getOccurrences().add(od.toTaskOccurrence());
             return t;
+        }
+    }
+
+    static class ActivityEntryDto {
+        String timestamp, actionDescription;
+        ActivityEntryDto(ActivityEntry e) {
+            timestamp = e.getTimestamp().toString();
+            actionDescription = e.getActionDescription();
         }
     }
 }
