@@ -13,6 +13,7 @@ out/
 build/
 target/
 bin/
+dependency-reduced-pom.xml
 
 # OS
 .DS_Store
