@@ -1,0 +1,313 @@
+Contract CO1: createTask
+Operation:
+creatTask(String title, String description, Priority priority,
+Date completeBy)
+
+Preconditions:
+  - The system is running and online.
+  - The task title is provided and correct.
+  - The priority is chosen.
+
+Postcodition:
+  - A new Task object is created
+  - Task attributes including title, description, priority, the completion date, the
+  date it was created, and status) are all set using the (attribute modification)
+  - A new ActivityEntry object is created
+  - The ActivityEntry then gets associated with the Task 
+  - The ActivityEntry's attributes such as timestamp and description are set
+
+Contract CO3: updateTask
+Operation:
+updateTask(...)
+
+Preconditions:
+  - The system is running and online.
+  - The task that needs to be updated exists.
+
+Postcondition:
+  - One or more Task attributes of a given task (title, description, priority, due date, or status) are updated.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry attributes such as timestamp and description are set.
+
+Contract CO3: completeTask
+Operation:
+completeTask(String taskId)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the provided taskId exists in the system.
+  - The Task status gets updated to completed.
+  - The Task completion date gets updated to the current date/time.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry then gets associated with the Task 
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the task was completed.
+
+Postcondition (Failure Scenario):
+  - There is no Task object with the given taskId exists in the system.
+  - There is no task attributes modified.
+  - There is no ActivityEntry object created.
+  - The state of the system remains unchanged.
+
+Contract CO4: cancelTask
+Operation:
+cancelTask(String taskId)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the provided taskId exists in the system
+  - The Task status is updated to cancelled.
+  - The Task completion state reflects that it is no longer active.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the task is cancelled.
+
+Postcondition (Failure Scenario):
+  - There is no Task object with the provdied taskId in the system.
+  - There is no task attributes to modify.
+  - There is no ActivityEntry object created.
+  - The state of the system remains unchanged.
+
+Contract CO5: createProject
+Operation:
+createProject(String name, String description)
+
+
+Preconditions:
+  - The system is running and online.
+  - A project name is provided (either valid or invalid).
+
+Postcondition (Success Scenario):
+  - The given project name is valid (it is not empty).
+  - A new Project with the given name is created.
+  - The Project’s attributes (projectId, name, and optional description) are set.
+  - The new Project object gets stored in the system.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Project.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the project was created.
+
+Postcondition (Failure Scenario):
+  - The given project name is missing/not provided.
+  - There is no Project object created.
+  - There is no system data that is modified.
+  - There is no ActivityEntry object created.
+  - The state of the system remains unchanged.
+
+Contract CO6: assignTaskToProject
+Operation:
+assignTaskToProject(String taskId, String projectId)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+  - A project identifier (projectId) is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the given taskId in the system.
+  - There is a Project object with the given projectId in the system.
+  - The association between the Task and the Project is created.
+  - The specified Task is assigned to the specified Project.
+  - The task list of the Project gets updated to include the new task.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the task was assigned to a project.
+
+Postcondition (Failure scenario when task not found):
+  - There is no Task object with the given taskId in the system.
+  - There is no association for the given task and project created.
+  - There is no system data that is modified.
+  - There is no ActivityEntry object created.
+  - The state of the system remains unchanged.
+
+Postcondition (Failure Scenario when project not found):
+  - There is a Task object with the given taskId in the system.
+  - There is no Project object with the given projectId in the system.
+  - There is no association for the given task and project created.
+  - There is no system data that is modified.
+  - No ActivityEntry object is created.
+  - The state of the system remains unchanged.
+
+Contract CO7: removeTaskFromProject
+Operation:
+removeTaskFromProject(String taskId)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the given taskId in the system.
+  - The association between the Task and its Project is removed.
+  - The Task will no longer belongs to any Project.
+  - The Project’s task list is updated and it no longer includes the specified Task.
+  - The Task object itself remains in the system.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the task was removed from its project.
+
+Postcondition (Failure Scenario):
+  - There is no Task object with the given taskId in the system.
+  - There is no task and project association that is modified.
+  - There is no system data changed.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+
+Contract CO8: moveTaskToProject
+Operation:
+moveTaskToProject(String taskId, String newProjectId)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+  - A project identifier (newProjectId) is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the given taskId in the system.
+  - There is a Project object with the given newProjectId in the system.
+  - The association between the Task and its current Project is removed.
+  - The association between the Task and the new Project is created.
+  - The Task is now assigned to the new Project.
+  - The previous Project’s task list removes the Task.
+  - The new Project’s task list includes the Task.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the task was moved to another project.
+
+Postcondition (Failure Scenario when task is not found):
+  - There is no Task object with the given taskId in the system.
+  - There is no task and project associations that are modified.
+  - There is no system data that is changed.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Postcondition (Failure Scenario when project is not found):
+  - There is a Task object with the given taskId in the system.
+  - There is no Project object with the given newProjectId in the system.
+  - There is no task and project associations that are modified.
+  - There is no system data changed.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Contract CO9: createSubtask
+Operation:
+createSubtask(String parentTaskId, String title)
+
+Preconditions:
+  - The system is running and online.
+  - A parent task identifier (parentTaskId) is provided.
+  - A subtask title is provided (either valid or invalid).
+
+Postcondition (Success Scneario):
+  - There is a Task object with the given parentTaskId in the system.
+  - The subtask title is valid (not empty).
+  - A new Subtask object is created.
+  - The Subtask’s attributes (subtaskId, title, status, and creation date) are set.
+  - The Subtask gets associated with the parent Task.
+  - The parent Task’s subtask list includes the new Subtask.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the parent Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that a subtask was created.
+
+Postcondition (Failure Scenario when the parent task is not found):
+  - There is no Task object with the given parentTaskId in the system.
+  - There is no Subtask object created.
+  - There is no system data modified.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Postcondition (Failure Scenario when the subtask's title is missing or invalid):
+  - There is a Task object with the given parentTaskId in the system.
+  - The subtask title is missing (invalid).
+  - There is no Subtask object created.
+  - There is no system data modified.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Contract CO10: setSubtaskCompletion
+Operation:
+setSubtaskCompletion(String subtaskId, Boolean completionStatus)
+
+Preconditions:
+  - The system is running and online.
+  - A subtask identifier (subtaskId) is provided.
+  - A completion status is provided.
+
+Postcondition (Success Scenario):
+  - There is a Subtask object with the given subtaskId in the system.
+  - The Subtask completion status attribute is updated according to completionStatus.
+  - The Subtask’s completion date is updated if needed.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the parent Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that the subtask completion status was updated.
+
+Postcondition (Failure Scenario):
+  - There is no Subtask object with the given subtaskId in the system.
+  - There is no subtask attributes that are modified.
+  - There is no system data changed.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Contract CO11: addTagToTask
+Operation:
+addTagToTask(String taskId, String tagKeyword)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+  - A tag keyword is provided (either valid or invalid).
+
+Postcondition (Success Scenario):
+  - There is a Task object with the given taskId in the system.
+  - The tag keyword is valid.
+  - There is a Tag object corresponding to the given keyword or it gets created.
+  - The association between the Task and the Tag is created.
+  - The Task’s tag collection is updated to include the new Tag.
+  - A new ActivityEntry object is created.
+  - The ActivityEntry is associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that a tag was added to the task.
+
+Postcondition (Failure where the task is not found):
+  - There is no Task object with the given taskId in the system.
+  - There is no tag created or associated.
+  - There is no system data modified.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Postcondition (Failure where the keyword is invalid):
+  - There is a Task object with the given taskId in the system.
+  - The tag keyword is invalid.
+  - There is no tag created or associated with the task.
+  - There is no system data modified.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
+
+Contract CO12: removeTagFromTask
+Operation:
+removeTagFromTask(String taskId, String tagKeyword)
+
+Preconditions:
+  - The system is running and online.
+  - A task identifier (taskId) is provided.
+  - A tag keyword is provided.
+
+Postcondition (Success Scenario):
+  - There is a Task object with the given taskId in the system.
+  - The association between the Task and the Tag identified by tagKeyword is removed.
+  - The Task’s tag collection is updated to no longer include that Tag.
+  - There is a new ActivityEntry object created.
+  - The ActivityEntry then gets associated with the Task.
+  - The ActivityEntry’s attributes such as timestamp and description are set to indicate that a tag was removed from the task.
+
+Postcondition (Failure Scenario):
+  - There is no Task object with the given taskId in the system.
+  - There is no tag associations modified.
+  - There is no system data changed.
+  - There is no ActivityEntry object created.
+  - The system state remains unchanged.
