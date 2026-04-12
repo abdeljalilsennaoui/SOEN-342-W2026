@@ -1,0 +1,38 @@
+UC-01 Fully Dressed Use Case Scenario
+ID: UC-01
+Title: Create Task
+Description: This use case describes how the user creates a new task in 
+the Personal Task Management System in order to organize and track personal work or 
+activities over time.
+Primary Actor: User
+Preconditions: 
+    - The system is running and online
+    - The user is on a screen where task creation is available
+Inputs:
+  - The title of the task
+  - Any additional information in the description
+  - The priority level of the tasks
+  - The date the task must be completed by (optional)
+Outputs:
+  - The new tasks that have been created properly saved to the system
+  - A confirmation that the task was created
+Main Succes Scenario:
+  1. The user selects the option Create Task.
+  2. The system brings the task creation form into display.
+  3.The user inputs a the title of the task, any additional description, the priority level of 
+  the task, and optionally the date the task should be completed by.
+  4. The user submits the task creation request to the system.
+  5. The system scans through the provided informations to validate it.
+  6. The system cretes a new task with the creation date set to the the current 
+  time and status set to open.
+  7. The system records conducted activity with time stamp.
+  8. The system confirms the sucessful creation of the task and displays a message with
+  the task details.
+
+Alternative Failure Scenario:
+  5a. The task title is missing or invalid
+    1. The system detects that the task title is missing or invalid.
+    2. The reuest for task creation is rejected by the system.
+    3. The system displays an error message on screen indicating that a
+    valid title is required.
+    4. There is no task created and no activity entry recorded.
