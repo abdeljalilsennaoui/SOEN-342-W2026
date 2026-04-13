@@ -8,8 +8,17 @@ import util.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
+
+    private static final Scanner SCANNER = new Scanner(System.in);
+
+    private static void pause(String label) {
+        System.out.print("\n[press ENTER for " + label + "] ");
+        SCANNER.nextLine();
+        System.out.println();
+    }
 
     public static void main(String[] args) {
         TaskRepository repository = new TaskRepository();
@@ -18,11 +27,13 @@ public class Main {
         PersonalTaskManager manager = new PersonalTaskManager(repository, activityLog, icalGateway);
 
         // Load persisted data if it exists
-        JsonPersistence.load(repository);
+        JsonPersistence.load(repository, activityLog);
 
         System.out.println("==============================================");
         System.out.println("  Personal Task Manager - PoC Demo");
         System.out.println("==============================================\n");
+
+        pause("Step 1: create collaborators");
 
         // ---- Step 1: Create Collaborators ----
         System.out.println("--- Step 1: Create Collaborators ---");
@@ -55,10 +66,12 @@ public class Main {
         System.out.println("  Created: " + task3);
         System.out.println();
 
+        pause("Steps 4-8: update, assign to projects, subtasks, tags");
+
         // ---- Step 4: Update Task ----
         System.out.println("--- Step 4: Update Task ---");
         manager.updateTask(task2.getTaskId(), null, "Document all REST and GraphQL endpoints",
-                PriorityLevel.HIGH, null, null, null);
+                PriorityLevel.HIGH, null, null);
         System.out.println("  Updated task2 description and priority.");
         System.out.println("  " + task2);
         System.out.println();
@@ -97,6 +110,8 @@ public class Main {
         System.out.println("  After removing 'urgent': " + task1.getTags());
         System.out.println();
 
+        pause("Steps 9-10: collaborator assignment + overload rejection");
+
         // ---- Step 9: Assign Collaborator (success) ----
         System.out.println("--- Step 9: Assign Collaborator (success) ---");
         manager.assignTaskToCollaborator(task1.getTaskId(), seniorCollab.getCollaboratorId());
@@ -115,6 +130,8 @@ public class Main {
         }
         System.out.println();
 
+        pause("Step 11: recurring task");
+
         // ---- Step 11: Create Recurring Task ----
         System.out.println("--- Step 11: Create Recurring Task ---");
         RecurrencePattern weeklyPattern = new RecurrencePattern(
@@ -129,6 +146,8 @@ public class Main {
         }
         System.out.println();
 
+        pause("Step 12: complete and cancel");
+
         // ---- Step 12: Complete and Cancel Tasks ----
         System.out.println("--- Step 12: Complete and Cancel Tasks ---");
         manager.completeTask(task3.getTaskId());
@@ -136,6 +155,36 @@ public class Main {
         manager.cancelTask(task2.getTaskId());
         System.out.println("  Cancelled: " + task2);
         System.out.println();
+
+        pause("Step 12b: STATE MACHINE — guards and reopen (iteration 4 highlight)");
+
+        // ---- Step 12b: State Machine Guards and Reopen ----
+        System.out.println("--- Step 12b: State Machine Guards and Reopen ---");
+
+        System.out.println("  Attempting to complete already-completed task...");
+        try {
+            manager.completeTask(task3.getTaskId());
+        } catch (IllegalStateException e) {
+            System.out.println("  Rejected: " + e.getMessage());
+        }
+
+        System.out.println("  Attempting to cancel already-cancelled task...");
+        try {
+            manager.cancelTask(task2.getTaskId());
+        } catch (IllegalStateException e) {
+            System.out.println("  Rejected: " + e.getMessage());
+        }
+
+        System.out.println("  Reopening completed task...");
+        manager.reopenTask(task3.getTaskId());
+        System.out.println("  Reopened: " + task3);
+
+        System.out.println("  Reopening cancelled task...");
+        manager.reopenTask(task2.getTaskId());
+        System.out.println("  Reopened: " + task2);
+        System.out.println();
+
+        pause("Steps 13-15: search, CSV export, CSV import");
 
         // ---- Step 13: Search Tasks ----
         System.out.println("--- Step 13: Search Tasks ---");
@@ -197,12 +246,16 @@ public class Main {
         }
         System.out.println();
 
+        pause("Step 16: activity log (now persisted)");
+
         // ---- Step 16: Print Activity Log ----
         System.out.println("--- Step 16: Activity Log ---");
         for (ActivityEntry entry : activityLog.getEntries()) {
             System.out.println("  " + entry);
         }
         System.out.println();
+
+        pause("Steps 17-18: iCal export, overloaded collaborators");
 
         // ---- Step 17: Export to iCal ----
         System.out.println("--- Step 17: Export to iCal ---");
@@ -235,7 +288,7 @@ public class Main {
         System.out.println();
 
         // ---- Save state to JSON ----
-        JsonPersistence.save(repository);
+        JsonPersistence.save(repository, activityLog);
         System.out.println("  Data saved to data/ directory.");
 
         System.out.println("\n==============================================");

@@ -58,13 +58,13 @@ public class PersonalTaskManager {
     // ---- Interaction Diagram 2: Update Task ----
     public void updateTask(String taskId, String title, String description,
                            PriorityLevel priorityLevel, LocalDate dueDate,
-                           CompletionStatus completionStatus, RecurrencePattern recurrence) {
+                           RecurrencePattern recurrence) {
         Task task = taskRepository.findTaskById(taskId);
         if (task == null) {
             throw new IllegalArgumentException("Task not found: " + taskId);
         }
 
-        task.updateDetails(title, description, priorityLevel, dueDate, completionStatus, recurrence);
+        task.updateDetails(title, description, priorityLevel, dueDate, recurrence);
         activityLog.addEntry("Task updated: " + task.getTitle());
     }
 
@@ -88,6 +88,17 @@ public class PersonalTaskManager {
 
         task.cancel();
         activityLog.addEntry("Task cancelled: " + task.getTitle());
+    }
+
+    // ---- Reopen Task (State Machine) ----
+    public void reopenTask(String taskId) {
+        Task task = taskRepository.findTaskById(taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found: " + taskId);
+        }
+
+        task.reopen();
+        activityLog.addEntry("Task reopened: " + task.getTitle());
     }
 
     // ---- Interaction Diagram 5: Create Project ----
@@ -269,7 +280,7 @@ public class PersonalTaskManager {
 
                 // create task
                 Task task = new Task(taskName, description, priority, dueDate, null);
-                task.updateDetails(null, null, null, null, status, null);
+                task.setCompletionStatus(status);
                 taskRepository.saveTask(task);
 
                 // find or create project

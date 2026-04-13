@@ -17,6 +17,10 @@ public class ActivityLog {
         entries.add(new ActivityEntry(LocalDateTime.now(), actionDescription));
     }
 
+    public void addRestoredEntry(LocalDateTime timestamp, String actionDescription) {
+        entries.add(new ActivityEntry(timestamp, actionDescription));
+    }
+
     public List<ActivityEntry> getEntries() {
         return new ArrayList<>(entries);
     }

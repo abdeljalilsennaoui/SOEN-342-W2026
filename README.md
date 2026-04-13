@@ -1,18 +1,25 @@
-# SOEN 342 — Personal Task Manager (Iteration 2)
+# SOEN 342 — Personal Task Manager
 
 **Course:** SOEN 342 — Software Requirements and Deployment (Winter 2026, Concordia University)
 
 **Team:**
+
 - Abdeljalil Sennaoui (40117162)
 - Mohammad Almasri (40248819)
 - Subaanky Krishnapillai (40128716)
 
+## Demo Video
+
+https://drive.google.com/file/d/1utn3kxB8oSvWEvhkQ2D9QAXPjoax62ne/view?usp=sharing
+
 ## Overview
 
-A Personal Task Manager proof-of-concept built in plain Java. It demonstrates the design from our UML class diagram and interaction diagrams using GRASP patterns (Controller, Creator, Information Expert, Low Coupling, High Cohesion).
+A Personal Task Manager proof-of-concept built in Java with Maven. It demonstrates GRASP patterns (Controller, Creator, Information Expert, Low Coupling, High Cohesion) and includes a protocol state machine governing Task lifecycle transitions.
 
 Features include:
-- Create, update, complete, and cancel tasks
+
+- Create, update, complete, cancel, and reopen tasks
+- Protocol state machine enforcement (only OPEN tasks can be completed/cancelled; completed/cancelled tasks can be reopened)
 - Organize tasks into projects
 - Create subtasks under tasks
 - Tag tasks with keywords
@@ -20,16 +27,21 @@ Features include:
 - Recurring tasks with daily, weekly, or monthly occurrences
 - Search tasks by keyword, status, priority, project, or date range
 - Import and export tasks via CSV
+- Export tasks to iCalendar (.ics) format
+- JSON persistence (data saved/loaded from `data/` directory)
+- OCL constraints enforced in code
 - Full activity log of all operations
 
 ## Prerequisites
 
-- **Java 8** or higher (JDK)
+- **Java 11** or higher (JDK)
+- **Maven 3.6+**
 
 Verify your installation:
+
 ```bash
 java -version
-javac -version
+mvn -version
 ```
 
 ## Project Structure
@@ -38,32 +50,36 @@ javac -version
 src/
 ├── app/            Main.java (entry point — runs the demo)
 ├── controller/     PersonalTaskManager.java (handles all system operations)
+├── gateway/        ICalGateway.java (iCalendar export via ical4j)
 ├── model/          Domain classes: Task, Subtask, Project, Collaborator,
 │                   Tag, RecurrencePattern, TaskOccurrence, ActivityEntry, ActivityLog
 ├── repository/     TaskRepository.java (in-memory storage and lookup)
-└── util/           Enums (CompletionStatus, PriorityLevel, RecurrenceType,
-                    CollaboratorCategoryType), SearchCriteria, CSVHelper
+└── util/           Enums, SearchCriteria, CSVHelper, JsonPersistence
+data/               JSON persistence files (runtime, gitignored)
+docs/
+├── iteration1/     Domain model, use cases
+├── iteration2/     UML class diagram, interaction diagrams
+├── iteration3/     OCL constraints, sequence diagrams
+└── iteration4/     All final artifacts
 ```
 
-## How to Compile and Run
+## How to Build and Run
 
 From the project root directory:
 
-### 1. Compile
+### Build
 
 ```bash
-javac -d out src/util/*.java src/model/*.java src/repository/*.java src/controller/*.java src/app/*.java
+mvn package
 ```
 
-This compiles all source files and places the `.class` files in the `out/` directory.
-
-### 2. Run
+### Run
 
 ```bash
-java -cp out app.Main
+java -jar target/personal-task-manager-1.0.jar
 ```
 
-This runs the full demo script which exercises the 17 system operations across 16 steps:
+This runs the full demo script which exercises all system operations:
 
 1. Create collaborators (Senior, Intermediate, Junior)
 2. Create projects
@@ -77,15 +93,136 @@ This runs the full demo script which exercises the 17 system operations across 1
 10. Assign beyond collaborator limit (rejected)
 11. Create a recurring task with weekly occurrences
 12. Complete and cancel tasks
-13. Search tasks (by default, keyword, status, project)
-14. Export search results to CSV
-15. Import tasks from CSV
-16. Print the full activity log
+13. **State machine guards**: attempt invalid transitions (rejected), then reopen tasks
+14. Search tasks (by default, keyword, status, project)
+15. Export search results to CSV
+16. Import tasks from CSV
+17. Print the full activity log
+18. Export to iCalendar (single task, project tasks, filtered list)
+19. List overloaded collaborators
+20. Save all data to JSON
 
 ### Output Files
 
-The demo generates two files in the working directory:
+The demo generates files in the working directory:
+
 - `export_output.csv` — exported task data
 - `sample_import.csv` — sample CSV used for the import step
+- `task_single.ics`, `project_website.ics`, `filtered_open.ics` — iCalendar exports
+- `data/*.json` — persisted tasks, projects, and collaborators
 
-These are generated at runtime and are not checked into the repository.
+## Task State Machine
+
+Tasks follow a protocol state machine with three states:
+
+```
+            complete()              reopen()
+  [new] --> OPEN ---------> COMPLETED
+              |                  |
+              | cancel()         | reopen()
+              v                  v
+           CANCELLED <----------(back to OPEN)
+```
+
+- Only **OPEN** tasks can be completed or cancelled
+- **COMPLETED** and **CANCELLED** tasks can be reopened (returns to OPEN)
+- Invalid transitions throw `IllegalStateException`
+
+## Demo Recording — Commands
+
+One command per step. Copy-paste in order.
+
+### Step 0 — Clean old data
+
+```bash
+rm -rf data/
+```
+
+### Step 1 — Build
+
+```bash
+mvn clean package
+```
+
+### Step 2 — Start the demo
+
+```bash
+java -jar target/personal-task-manager-1.0.jar
+```
+
+### Step 3 — Checkpoint 1 (Steps 1–3: collaborators, projects, tasks)
+
+Press **ENTER**
+
+### Step 4 — Checkpoint 2 (Steps 4–8: update, project assignment, subtasks, tags)
+
+Press **ENTER**
+
+### Step 5 — Checkpoint 3 (Steps 9–10: collaborator overload rejection)
+
+Press **ENTER**
+
+### Step 6 — Checkpoint 4 (Step 11: recurring task)
+
+Press **ENTER**
+
+### Step 7 — Checkpoint 5 (Step 12: complete and cancel)
+
+Press **ENTER**
+
+### Step 8 — Checkpoint 6 (Step 12b: state machine guards + reopen) ⭐
+
+Press **ENTER**
+
+### Step 9 — Checkpoint 7 (Steps 13–15: search, CSV export, CSV import)
+
+Press **ENTER**
+
+Then **open a second terminal tab** (Cmd+T) to show the generated CSV files:
+
+```bash
+cat export_output.csv
+cat sample_import.csv
+```
+
+### Step 10 — Checkpoint 8 (Step 16: activity log)
+
+Back to demo terminal. Press **ENTER**
+
+### Step 11 — Checkpoint 9 (Steps 17–18: iCal export, overloaded collaborators)
+
+Press **ENTER**
+_(Demo exits and writes to `data/`.)_
+
+Show the generated iCalendar files:
+
+```bash
+cat task_single.ics
+```
+
+### Step 12 — List persisted files
+
+```bash
+ls data/
+```
+
+### Step 13 — Show persisted files
+
+```bash
+cat data/tasks.json
+cat data/projects.json
+cat data/collaborators.json
+cat data/activitylog.json
+```
+
+### Step 14 — Re-run to prove reload
+
+```bash
+java -jar target/personal-task-manager-1.0.jar
+```
+
+Wait for Step 1 output. Confirm IDs continue (`COL-4`, `PRJ-3`, `TSK-8` — not 1).
+
+### Step 15 — Exit
+
+Press **Ctrl+C**
