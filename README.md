@@ -7,6 +7,10 @@
 - Mohammad Almasri (40248819)
 - Subaanky Krishnapillai (40128716)
 
+## Demo Video
+
+https://drive.google.com/file/d/1utn3kxB8oSvWEvhkQ2D9QAXPjoax62ne/view?usp=sharing
+
 ## Overview
 
 A Personal Task Manager proof-of-concept built in Java with Maven. It demonstrates GRASP patterns (Controller, Creator, Information Expert, Low Coupling, High Cohesion) and includes a protocol state machine governing Task lifecycle transitions.
