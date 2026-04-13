@@ -118,6 +118,86 @@ Tasks follow a protocol state machine with three states:
 - **COMPLETED** and **CANCELLED** tasks can be reopened (returns to OPEN)
 - Invalid transitions throw `IllegalStateException`
 
+## Demo Recording — Commands
+
+One command per step. Copy-paste in order.
+
+### Step 0 — Clean old data
+```bash
+rm -rf data/
+```
+
+### Step 1 — Build
+```bash
+mvn clean package
+```
+
+### Step 2 — Start the demo
+```bash
+java -jar target/personal-task-manager-1.0.jar
+```
+
+### Step 3 — Checkpoint 1 (Steps 1–3: collaborators, projects, tasks)
+Press **ENTER**
+
+### Step 4 — Checkpoint 2 (Steps 4–8: update, project assignment, subtasks, tags)
+Press **ENTER**
+
+### Step 5 — Checkpoint 3 (Steps 9–10: collaborator overload rejection)
+Press **ENTER**
+
+### Step 6 — Checkpoint 4 (Step 11: recurring task)
+Press **ENTER**
+
+### Step 7 — Checkpoint 5 (Step 12: complete and cancel)
+Press **ENTER**
+
+### Step 8 — Checkpoint 6 (Step 12b: state machine guards + reopen) ⭐
+Press **ENTER**
+
+### Step 9 — Checkpoint 7 (Steps 13–15: search, CSV export, CSV import)
+Press **ENTER**
+
+Then **open a second terminal tab** (Cmd+T) to show the generated CSV files:
+```bash
+cat export_output.csv
+cat sample_import.csv
+```
+
+### Step 10 — Checkpoint 8 (Step 16: activity log)
+Back to demo terminal. Press **ENTER**
+
+### Step 11 — Checkpoint 9 (Steps 17–18: iCal export, overloaded collaborators)
+Press **ENTER**
+*(Demo exits and writes to `data/`.)*
+
+Show the generated iCalendar files:
+```bash
+cat task_single.ics
+```
+
+### Step 12 — List persisted files
+```bash
+ls data/
+```
+
+### Step 13 — Show persisted files
+```bash
+cat data/tasks.json
+cat data/projects.json
+cat data/collaborators.json
+cat data/activitylog.json
+```
+
+### Step 14 — Re-run to prove reload
+```bash
+java -jar target/personal-task-manager-1.0.jar
+```
+Wait for Step 1 output. Confirm IDs continue (`COL-4`, `PRJ-3`, `TSK-8` — not 1).
+
+### Step 15 — Exit
+Press **Ctrl+C**
+
 ## Demo Video
 
 TODO: add link
