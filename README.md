@@ -8,9 +8,10 @@
 - Mohammad Almasri (40248819)
 - Subaanky Krishnapillai (40128716)
 
-## Demo Video
+## Demo Videos
 
-https://drive.google.com/file/d/1utn3kxB8oSvWEvhkQ2D9QAXPjoax62ne/view?usp=sharing
+- **Scripted demo** — full automated walkthrough of every feature: https://drive.google.com/file/d/1utn3kxB8oSvWEvhkQ2D9QAXPjoax62ne/view?usp=sharing
+- **Interactive demo** — short manual session driving the menu-driven CLI by hand. _(Link to be added.)_
 
 ## Overview
 
@@ -75,11 +76,15 @@ mvn package
 
 ### Run
 
+The app can be launched in either of two modes.
+
+#### Scripted demo (default)
+
 ```bash
 java -jar target/personal-task-manager-1.0.jar
 ```
 
-This runs the full demo script which exercises all system operations:
+Runs the automated walkthrough shown in the first demo video. It exercises every feature in order, pausing between checkpoints for an ENTER key press. The full step list:
 
 1. Create collaborators (Senior, Intermediate, Junior)
 2. Create projects
@@ -101,6 +106,14 @@ This runs the full demo script which exercises all system operations:
 18. Export to iCalendar (single task, project tasks, filtered list)
 19. List overloaded collaborators
 20. Save all data to JSON
+
+#### Interactive mode
+
+```bash
+java -jar target/personal-task-manager-1.0.jar --interactive   # or -i
+```
+
+Launches a menu-driven CLI (shown in the second demo video) where you drive operations manually. The menu covers every feature — tasks, projects, subtasks, tags, collaborators, search, CSV import/export, iCal export, listings, activity log, and overloaded collaborators. Data loads from `data/` on start and auto-saves on quit (`0` or `q`).
 
 ### Output Files
 
@@ -128,9 +141,9 @@ Tasks follow a protocol state machine with three states:
 - **COMPLETED** and **CANCELLED** tasks can be reopened (returns to OPEN)
 - Invalid transitions throw `IllegalStateException`
 
-## Demo Recording — Commands
+## Scripted Demo — Recording Script
 
-One command per step. Copy-paste in order.
+Step-by-step commands used to record the first (scripted) demo video. Copy-paste in order. These apply to the default scripted mode only — interactive mode has no fixed script.
 
 ### Step 0 — Clean old data
 
