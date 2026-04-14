@@ -11,7 +11,7 @@
 ## Demo Videos
 
 - **Scripted demo** — full automated walkthrough of every feature: https://drive.google.com/file/d/1utn3kxB8oSvWEvhkQ2D9QAXPjoax62ne/view?usp=sharing
-- **Interactive demo** — short manual session driving the menu-driven CLI by hand. _(Link to be added.)_
+- **Interactive demo** — short manual session driving the menu-driven CLI by hand: https://drive.google.com/file/d/1J6wQZmi4-2wPcgYiH7Zt-2CgqXAHS3JP/view?usp=sharing
 
 ## Overview
 
