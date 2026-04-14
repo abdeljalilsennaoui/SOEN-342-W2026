@@ -21,6 +21,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        for (String a : args) {
+            if (a.equals("--interactive") || a.equals("-i")) {
+                InteractiveMain.run();
+                return;
+            }
+        }
+
         TaskRepository repository = new TaskRepository();
         ActivityLog activityLog = new ActivityLog();
         ICalGateway icalGateway = new ICalGateway();
